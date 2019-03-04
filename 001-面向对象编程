@@ -1,13 +1,15 @@
 # :sun_with_face:理解对象
-<p id="title>
+<p id="title"></p>
 <h2>目录</h2>
-:mag_right:<a href="#">理解对象</a>
-:mag_right:<a href="#">理解对象</a>
-:mag_right:<a href="#">理解对象</a>
-:mag_right:<a href="#">理解对象</a>
+:mag_right:<a href="#">理解对象<a><br>
+:mag_right:<a href="#">理解对象<a><br>
+:mag_right:<a href="#">理解对象<a><br>
+:mag_right:<a href="#">理解对象<a><br>
+<p id="a1"></p>
+
+## 1.1理解对象
+
   可通过创建一个object对象或者对象字面量
-##属性类型
-  ###数据属性
     Configurable:能否删除而重新定义
     Enumerable: 能否通过for-in循环返回属性
     Writeable: 能否修改属性的值
