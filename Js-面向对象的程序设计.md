@@ -124,6 +124,28 @@
       alert(this.name);
     };
   ```
+  如果在实例中创建该属性，该属性将会屏蔽原型中的属性
+  ```javascript
+    function Person(){
+    }
+    Person.prototype.name="fff";
+    Person.prototype.age=age;
+    Person.prototype.job=job;
+    Person.prototype.sayName=function(){
+      alert(this.name);
+    };
+    
+    var person1=new Person;
+    var person2=new Person;
+    person1.name="hhh";
+    alert(person1.name);  //"hhh"来自实例
+    alert("person2.name");//"fff"来自原型
+  ```
+  原型的动态性<br>
+  尽管可以随时为原形添加属性和方法，但如果重写整个原型对象，就等于切断了构造函数与最初原型的关系。
+  ```javascript
+  
+  ```
 ### :bomb:1.1.4
 ### :bomb:1.1.5
 ### :bomb:1.1.6
