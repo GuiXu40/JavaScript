@@ -1,13 +1,13 @@
 # :sun_with_face:面向对象
 ---
 <p id="title">目录</p>
-:mag_right:<a href="a1">理解对象</a><br>
-:mag_right:<a href="a2">创建对象</a><br>
-:mag_right:<a href="a3">继承</a><br>
+:mag_right:<a href="#a1">理解对象</a><br>
+:mag_right:<a href="#a2">创建对象</a><br>
+:mag_right:<a href="#a3">继承</a><br>
 <p id="a1"></p>
 
 ## :unlock:1.1理解对象
-<a href="title">:bulb:返回目录</a>
+<a href="#title">:bulb:返回目录</a>
 ### :bomb:1.1.1属性类型
 #### :exclamation:数据属性
   【1】Configurable:能否痛过delete删除属性而重新定义属性。默认：true。<br>
@@ -62,7 +62,7 @@
 <p id="a2">创建对象</p>
 
 ## :unlock:创建对象
-<a href="title">返回目录</a>
+<a href="#title">返回目录</a>
 ### :bomb:1.1.1工厂模型
   用函数来封装以特定接口创建对象。<br>
   ```javascript
@@ -113,6 +113,7 @@
         }
       ```
 ### :bomb:1.1.3原型模式
+#### :exclamation:原型
   每个函数都包含prototype(原型)属性，相当于指针，可以直接将信息添加到原形函数中。
   ```javascript
     function Person(){
@@ -141,11 +142,55 @@
     alert(person1.name);  //"hhh"来自实例
     alert("person2.name");//"fff"来自原型
   ```
-  原型的动态性<br>
+  #### :exclamation:原型的动态性
   尽管可以随时为原形添加属性和方法，但如果重写整个原型对象，就等于切断了构造函数与最初原型的关系。
   ```javascript
-  
+    function Person(){
+    }
+    var friend=new Person();
+    Person.prototype={
+      constructor:Person,
+      name:"fff",
+      age:22,
+      job:"asd",
+      sayName:function(){
+        alert("this.name");
+      }
+    };
+    friend.sayName();  //error
   ```
-### :bomb:1.1.4
-### :bomb:1.1.5
-### :bomb:1.1.6
+  先创造一个Person的一个实例，然后又重写了其原型对象，但调用时发生了错误，因为friend指定的原型不包含以该名字命名的属性。
+### :bomb:1.1.4组合使用构造函数和原型函数
+  所有共享的属性都在原型中定义
+### :bomb:1.1.5动态原型模式
+  将所有信息都封装在构造函数中，通过检查莫个应该存在的方法是否有效，来决定是否需要初始化原型。
+  ```javascript
+    function Person(name,age,job){
+      this.name=name;
+      this.age=age;
+      this.job=job;
+      if(typeof this.sayName != "function"){
+        Person.prototype.sayName=function(){
+          alert("this.name");
+        }
+      }
+    }
+  ```
+### :bomb:1.1.6寄生构造函数模型
+ ```javascript
+ function Person(name,age,job){
+  var o =new object();
+  o.name=name;
+  o.age=age;
+  o.job=job;
+  o.sayName(){
+    alert(this.name);
+  };
+  return o;
+ }
+ ```
+ <p id="#a3"></p>
+ 
+## :unlock:1.3继承
+### :bomb:1.3.1原型链
+
