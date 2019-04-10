@@ -131,9 +131,72 @@ Document类型表示文档,document对象是window对象的一个属性，因此
 + nodeName为"#document";
 + nodeValue为null;
 + ownerDocument 为null
-
-
-
+### 文档的子节点
+两个内置访问子节点的方式：1.documentElement：该属性始终指向 HTML页面中的<html>元素。2.childNodes列表访问文档元素。
+```javascript
+<html>
+  <body></body>  
+</html>
+  
+var html = document.documentElement;   //取得对html的引用
+alert(html == docement.childNodes[0]);  //true
+alert(heml == docement.firstChild);  //true
+```
+document对象还有一个body属性，直接指向body属性
+```javascript
+var body = document.body;
+```
+### 文档信息
+还具有一些标准的Document对象所没有的属性
++ title，包含着<tltle>元素中的文本(可修改)
+  ```javascript
+  var originalTitle = document.title;
+  document.title = "New page title"
+  ```
++ URL:包含网页完整的URL
++ domain:只包含页面的域名
++ referer: 保存着链接到当前页面的URL,在没有来源页面的时候，可能会包含空字符串。
+注意：只有domain是可以设置的，而且所有浏览器对domain还有一个限制，既如果域名一开始是松散的“loose”，就不能将其设置为紧绷的。("wro.com"->"pp.wro.com" false )
+### 查找元素
+  + getElementById()<br>
+  ID必须与页面中的id特性全面匹配，包括大小写。
+  ```javascript
+  <div id="myDiv">some text</div>
+  //取得这个元素
+  var div = document.getElementById("myDiv");  //正确的用法
+  var div = document.getElementById("mydiv");  //错误的用法
+  ```
+  ```javascript
+  <input type="text" name="myElement" value="Text field">
+  <div id="myElement">A div</div>
+  ```
+  再此代码中调用document.getElementById("myElement");返回的是input标签
+  + getElementByTagName();<br>
+  返回的是包含0，或多个元素的NodeList,在html文档中会返回一个HTMLCollection.
+  ```javascript
+  var images = document.getElementsByTagName("img");
+  alert(images.length);
+  alert(images[0].src);  //输出第一个图像元素的src特性
+  alert(images.item(0).src);// 输出第一个元素的src特性。
+  ```
+  + HTMLCollection还有一个方法：namedItem(),通过元素的name特性
+  ```javascript
+  <img src="" name="myImage">
+  var image = images.nameItem("myImage");
+  ```
+  还支持名称访问项
+  ```javascript
+  var image = images["myImage"];
+  ```
+  要取得文档中的所有元素，可以向getElementByTagName()中传入*号。<br>
+  + getElementByName():只有HTMLDocument才具有的方法
+### 特殊集合
++ document.anchors:包含文档中所有带name的<a>元素
++ document.forms:包含文档中所有的form元素。
+  + document.images 包含所有图片
+  + document.link 带href特性的<a>元素
+### DOM一致性检测
+  
 
 
 
