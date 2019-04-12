@@ -196,15 +196,61 @@ var body = document.body;
   + document.images 包含所有图片
   + document.link 带href特性的<a>元素
 ### DOM一致性检测
-  
-
-
-
-
-
-
-
+### 文档写入
+将输出流写入网页的能力：
+  + write(),，原样写入，writeln()：加一个‘\n’,都只接受一个参数，可以使用这两个方法向页面动态添加内容<br>
+  ```javascript
+  <script>
+    document.write("<strong>"+(new Date()).toString()+ "<strong>");
+  </script>
+  ```
+  可以动态包含外部资源：
+  ```javascript
+  <script>
+    document.write("<script type=\"text\javascript\" scr=\"file.js\">" + "</script>");  //错误表示 ,</script>将被解释为外部的script标签 
+     document.write("<script type=\"text\javascript\" scr=\"file.js\">" + "<\/script>"); //添加转义字符
+  </script>
+  ```
+  如果在文档加载结束后再调用document.write()，那么输出的内容会重写整个页面
+  + open(),close()：用于打开和关闭网页的输出流。如果在页面加载期间使用write和writeln方法，则不需要用到这个方法。
+    
 ## :snowflake:Element类型
+Element类型用于表现XML和HTNL元素，提供了对元素标签名，子节点及特性的访问。<br>
+特性：
++ nodeType: 1;
++ nodeName: 元素的标签名
++ nodeValue: null
++ parentNode: document或Element
+要访问元素的标签名：nodeName和tagName都可以
+```javascript
+<div id="myDiv"></div>
+//取得标签
+var div = document.getElementByTagName("myDiv");
+alert(div.tagName);   //"Div"在HTML中标签名始终大写
+alert(div.tagName == div.nodeName);   //true
+```
+### HTML元素
+所以HTNL元素都有HTMLElement类型表示<br>
+标准特性
++ id
++ title
++ lang
++ dir 语言的方向
++ className
+### 取得特性
+每个元素都有一个或多个特性，特性的用途是给出相应元素或内容的附加信息
++ getAttribute()
+```javascript
+var div = document.getElementById("myDiv");
+
+alert(div.getAttribute("id"));   //"myDiv"
+alert(div.getAttribute("class"));  //"bd"
+alert(div.getAttribute("title"));  //"Body text"
+alert(div.getAttribute("lang"));  //"en"
+alert(div.getAttribute("dir"));  //"ltr"
+```
+注意：传递给getAttribute()的特姓名与实际的特性名相同。因此要获取class的特性值，要传入class而不是className(只有再通过对象属性访问特性时才用，)若不存在返回null。<br>
+可以取得自定义特性
 ## :snowflake:Text类型
 ## :snowflake:Command类型
 ## :snowflake:CDATASection类型
