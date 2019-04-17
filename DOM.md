@@ -251,6 +251,29 @@ alert(div.getAttribute("dir"));  //"ltr"
 ```
 注意：传递给getAttribute()的特姓名与实际的特性名相同。因此要获取class的特性值，要传入class而不是className(只有再通过对象属性访问特性时才用，)若不存在返回null。<br>
 可以取得自定义特性
+```javascript
+<div id="myDiv" my_special_attribute="hello"></div>
+
+//可以像其他特性一样取得这个值
+var value = div.getAttribute("my_special_attribute");
+```
+特性的名称不区分大小写，根据HTML5规范，自定义特性应该加上data-前缀以便验证。<br>
+特性：
++ style 再通过getAttribute()返回的是包含css文本的，而通过属性访问却是一个对象
++ onclick这样的事件处理程序 返回的是代码字符串。
+由于这些差距，再通过JavaScript以编程方式操作DOM时，开发人员不使用getAttribute()，而使用对象的属性
+### 设置特性-setAttribute(要设置的特姓名，值)
+如果特性存在，会替代现有的值，不存在，则创建该属性并设置相应的值。
+```javascript
+div.setAttribute("id","someOtherId");
+div.setAttribute("class","ft");
+div.setAttribute("tltle","some other text");
+```
+setAttribute()方法既可以操作HTML特性也可以操作自定义特性。
+### 删除元素特性removeAttribute()
+```javascript
+div.removeAttribute("class");
+```
 ## :snowflake:Text类型
 ## :snowflake:Command类型
 ## :snowflake:CDATASection类型
