@@ -335,8 +335,67 @@ div.firstChild.nodeVvalue = "some other message";
 div.firstChild.nodeValue = "some <strong>other</strong>message"
 //输出结果是：some &lt;strong&gt;...
 ```
+### 创建文本节点
+document.createTextNode()创建文本节点
+```javascript
+var element = document.createElement("div");
+element.className = "message";
+var text = document.createTextNode("hello,world");
+element.appendChild(text);
+document.body.appendChild(element);
+```
+一般每个元素只有一个文本节点，但可以包含多个子节点：
+```javascript
+var element = document.createElement("div");
+element.className = "message";
+var text = document.createTextNode("hello,world");
+element.appendChild(text);
 
-## :snowflake:Command类型
+var another = document.createTextNode("guixu");
+element.appendChild(another);
+document.body.appendChild(element);
+```
+如果两个文本节点是相邻的同胞节点，这两个节点的文本就会连起来，中间不会有空格。
+### 规范化文本节点
+同胞节点容易导致混乱，使用normalize()，可以将所有文本节点合并成一个
+```javascript
+var element = document.createElement("div");
+element.className = "message";
+var text = document.createTextNode("hello,world");
+element.appendChild(text);
+
+var another = document.createTextNode("guixu");
+element.appendChild(another);
+document.body.appendChild(element);
+
+alert(element.childNodes.length);  //2
+
+element.normalize();
+alert(element.childNodes.length);  //1
+alert(element.firstChild.nodeValue);  //hello worldguixu
+```
+### 分割文本节点
+splitText(),将文本节点分为2个节点
+```javascript
+var element = document.createElement("div");
+element.className = "message";
+var text = document.createTextNode("hello,world");
+element.appendChild(text);
+document.body.appendChild(element);
+
+var newNode = element.firstChild.splitText(5);
+alert(element.firstChild.nodeValue);  //hello
+alert(newNode.nodeValue);  //world
+```
+分割文本节点是从文本中获取数据的一种很常用的DOM解析技术
+
+## :snowflake:Commend类型
+特性：
++ nodeType:8
++ nodeName:#comment
++ nodeValue:注释的内容
++ 没有子节点
+其他用法同text节点
 ## :snowflake:CDATASection类型
 ## :snowflake:DocumentType类型
 ## :snowflake:DocumentFragment类型
@@ -346,6 +405,7 @@ div.firstChild.nodeValue = "some <strong>other</strong>message"
 # :bulb:DOM操作技术
 <a href="#title">:+1:回到目录</a>
 ## :snowflake:动态脚本
+方式：插入外部文件，直接插入JavaScript代码
 ## :snowflake:动态样式
 ## :snowflake:操作表格
 ## :snowflake:使用NodeList
