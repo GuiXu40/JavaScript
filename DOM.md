@@ -274,7 +274,68 @@ setAttribute()方法既可以操作HTML特性也可以操作自定义特性。
 ```javascript
 div.removeAttribute("class");
 ```
+### atteribute
+### 创建元素
+document.creatElement()
+```javascript
+var div = docement.creatElement("div");
+```
+在创建新元素的同时，也为元素设置了ownerDocument属性。可以操作元素的特性
+```javascript
+div.id="myDiv";
+div.className="box";
+```
+在新元素上设置这些属性只是赋予了相应的信息，由于新元素没有添加到文档树中，这些属性不会再浏览器中显示出来，可以使用appendChild(),insertBefore(),replaceChild().
+<br>
+也可以传入完整的元素标签
+```javascript
+var div = document.creatElement("<div id=\"myDiv\" calss=\"box\"></div>");
+```
+### 元素的字节点
+元素的childNodes属性包含了他的所有子节点，浏览器看待子节点有明显不同。
 ## :snowflake:Text类型
+纯文本可以包含转义的HTML字符，但不包含HTML代码。
+<br>
+特性：
++ nodeType:3
++ nodeName:"#text"
++ nodeValue:节点包含的文本
++ parentNode:Element
++ 没有子节点
+操作文本节点的文本的方法 ：
++ appendData(text): 将text添加到节点的末尾
++ deleteData(offset,count):从offset指定的位置开始删除count个字符
++ insertData(offset,text)：从offset指定的位置插入text
++ replaceData(offset,count,text):用text替代offset到offset+count位置的文本
++ splitText(offset)：从指定位置将文本分为两个部分
++ substringData(offset,count)：提取offset到offset+count位置的文本
+文本节点具有length属性，保存着节点中字符的数目，每个可以包含内容的元素最多只有一个文本节点，而且必须有内容存在。
+```javascript
+//没有内容，也没有文本节点
+<div></div>
+
+//有空格，因而有一个节点
+<div> </div>
+
+//有内容，因而有一个文本节点
+<div>hello,world</div>
+```
+第三个div有一个文本节点---nodeValue为hello，world
+<br>
+访问文本子节点
+```javascript
+var textNode = div.firstChild;
+```
+修改内容：
+```javascript
+div.firstChild.nodeVvalue = "some other message";
+```
+注意：字符串会经过HTML编码
+```javascript
+div.firstChild.nodeValue = "some <strong>other</strong>message"
+//输出结果是：some &lt;strong&gt;...
+```
+
 ## :snowflake:Command类型
 ## :snowflake:CDATASection类型
 ## :snowflake:DocumentType类型
