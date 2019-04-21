@@ -433,6 +433,16 @@ ul.appendChild(fragment);
 + nodeType:2
 + nodeValue: 是特征的值
 + nodeNmae： 特征的名字
+
+Attr对象有3个属性：name(特性名称),value(特性的值),specified（布尔值：区分特性是在代码中指定的还是默认的）
+```javascript
+//为元素添加align属性
+var attr = document.createAttribute("align");
+attr.value = "left";
+element.setAttributeNode(attr);
+alert(element.attributes["align"].value);  //"left"
+alert("");
+```
 <p id="a2"></p>
 
 # :bulb:DOM操作技术
@@ -440,7 +450,60 @@ ul.appendChild(fragment);
 ## :snowflake:动态脚本
 方式：插入外部文件，直接插入JavaScript代码
 ## :snowflake:动态样式
+
 ## :snowflake:操作表格
+表格行，单元格，表头
+```javascrript
+		<script type="text/javascript">
+			//创建table
+			var table=document.createElement("table");
+			table.border=1;
+			table.width="%100";
+			//创建tbody
+			var tbody=document.createElement("tbody");
+			table.appendChild(tbody);
+			//创建第一行
+			var row1=document.createElement("tr");
+			tbody.appendChild(row1);
+			var cell1_1=document.createElement("td");
+			cell1_1.appendChild(document.createTextNode("Cell 1,1"));
+			row1.appendChild(cell1_1);
+			var cell2_1=document.createElement("td");
+			cell2_1.appendChild(document.createTextNode("Cell 2,1"));
+			row1.appendChild(cell2_1);
+			//创建第二行
+			var row2=document.createElement("tr");
+			tbody.appendChild(row2);
+			var cell1_2=document.createElement("td");
+			cell1_2.appendChild(document.createTextNode("call 1,2"));
+			row2.appendChild(cell1_2);
+			var cell2_2=document.createElement("td");
+			cell2_2.appendChild(document.createTextNode("call 2,2"));
+			row2.appendChild(cell2_2);
+			//把表格添加到文档主体中
+			document.body.appendChild(table);
+		</script>
+```
+P282
 ## :snowflake:使用NodeList
+NodeList,NameNodeMap,HTMLCollrction，都是动态的，当文档结构发生改变的时候，都会发生改变，从本质上讲，所有NodeList对象都是在访问DOM实时进行的查询
+，以下代码会无限循环
+```javascript
+var divs = document.getElementsByTagName("div"),i,div;
+for(i=0;i<divs.length;i++)
+{
+  div = document.createElement("div");
+  document.body.appendChild(div);
+}
+```
+length会一直改变
+```javascript
+var divs = document.getElementsByTagName("div"),i,div,len;
+for(i=0,len=divs.length;i<len;i++)
+{
+  div = document.createElement("div");
+  document.body.appendChild(div);
+}
+```
 
 
