@@ -397,9 +397,42 @@ alert(newNode.nodeValue);  //world
 + 没有子节点
 其他用法同text节点
 ## :snowflake:CDATASection类型
+只基于XML文档，继承自Text类型，有除splitText()之外的所有方法
++ nodeType: 4
+
 ## :snowflake:DocumentType类型
 ## :snowflake:DocumentFragment类型
-## :snowflake:
+在文档中没有对应的标记。可以包含和控制节点，但不会像完整的文档那样占用额外的资源。
++ nodeType: 11
++ nodeName: "#document-fragment"
++ nodeValue: null
++ parentValue: null
+虽然不能把文档片段直接添加到文档中，但可以把它当作一个仓库，既可以保存在里面保存将来会添加到文档中的节点。创建文档片段：document.cteateDocumentFragment()
+```javascript
+var fragment = document.createDocumentFragment();
+
+```
+可以通过appendChild(),insertBrfore()将文档片段内容添加到文档中，实际上只会将文档片段中的所有子节点添加到相应位置，永远不会成为文档树的一部分。
+```javascript
+<ul id="myList"></ul>
+//为这个ul添加3个列表项，如果逐个添加列表项，导致浏览器反复渲染（呈现）新信息
+var fragment = document.createDocumentFragment();
+var ul = document.getElementById("myList");
+var li = null;
+for( vai i=0; i<3;i++)
+{
+  li = document.createElemrnt("li");
+  li.appendChild(document.createTextNode("Item" + (i+1)));
+  fargment.appendChild(li);
+}
+ul.appendChild(fragment);
+```
+
+## :snowflake:Attr类型
+在所有浏览器中，都可以通过Attr类型访问构造函数和原型
++ nodeType:2
++ nodeValue: 是特征的值
++ nodeNmae： 特征的名字
 <p id="a2"></p>
 
 # :bulb:DOM操作技术
