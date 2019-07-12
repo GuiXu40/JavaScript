@@ -78,8 +78,20 @@ function convertToArray(node){
   return array;
 }
 ```
-每个节点都有一个parentNode属性，指向父节点，，包含在childNodes列表中的每个节点之间都是同胞节点。通过使用列表中的每个节点的previousSibling和nextSibling属性，可以访问同一列表中的其他节点。<br>
-所有节点都有的最后一个节点是ownerDocument,指向表示整个文档的文档节点。
+每个节点都有一个parentNode属性，指向父节点，，包含在childNodes列表中的每个节点之间都是同胞节点。通过使用列表中的每个节点的previousSibling和nextSibling属性，可以访问同一列表中的其他节点,列表中的第一个节点的previousSibling属性和列表中的最后一个节点的nextSibling属性也为null。<br>
+所有节点都有的最后一个节点是ownerDocument,指向表示整个文档的文档节点（意思是任何节点都属于他所在的文档--》作用：不必在节点层次中通过层层回溯到顶端，而是可以直接访问文档节点）。
+```javascript
+if(someNode.nextSilbling === null)
+{
+	alert("这是最后一个节点");
+}else if(someNode.previousSibling === null)
+{
+	alert("这是第一个节点");
+}
+```
+-----
+注意点：虽然所有节点类型都继承自Node，但不是每种节点都有子节点。
+-----
 ### 操作节点
 + 增加节点：appendChild();
 ```javascript
@@ -89,12 +101,14 @@ alert(someNode.lastChild == newNode);  //true
 ```
 如果传入到appendChild()的节点已经是文档的一部分了，那就是将该节点从原来的位置移到新位置。
 ```javascript
+//例如：调用appendChild()时传入父节点的第一个子节点，那么这个节点就会成为父节点的最后一个节点
 //someNode 有多个子节点
 var returnNode = someNode.appendChild(someNode.firstChild);
 alert(returnNode == someNode.firstChild);    //false
-alert(returnNode == someNode.lastChild);
+alert(returnNode == someNode.lastChild);     //true
 ```
-+ 插入节点： insertBefore():接受两个参数（要插入的节点和作为参照的节点）
++ 插入节点： insertBefore():接受两个参数（要插入的节点和作为参照的节点）<br>
+被插入的节点会变成参照节点的同胞节点（previousSibling）and （如果参照节点是null，和appendChild()一样的操作）
 ```javascript
 //插入后成为最后一个子节点
 returnNode = someNode.insertBefore(newNede,null);
@@ -114,7 +128,7 @@ var returnNode = someNode.replaceChild(newNode,someNode.firstChild);
 //替换最后一个子节点
 var returnNode = someNode.replaceChild(newNode,someNode.lastChild);
 ```
-被替换的节点仍然还在文档中，当他在文档中没有了自己的位置。
+被替换的节点仍然还在文档中，当他在文档中没有了自己的位置。（所有关系指针都会被从它替代的节点复制过来）
 + 移除节点：removeChild()
 ```javascript
 var former = someNode.removeChild(someNode.firstChild);
@@ -122,8 +136,9 @@ var former = someNode.removeChild(someNode.firstChild);
 被移除的节点仍然还在文档中，当他在文档中没有了自己的位置。<br>
 这4种方法都是对莫个节点的子节点进行操作。必须先取得父节点（parentNode）
 + 其他方法
-   + cloneNode(布尔值)用于创建调用这个方法的节点的一个副本。，若为true：执行深复制（复制节点以及整个子节点树），false:执行浅复制（只复制节点本身）。
+   + cloneNode(布尔值)用于创建调用这个方法的节点的一个副本。，若为true：执行深复制（复制节点以及整个子节点树），false:执行浅复制（只复制节点本身）。--》复制后返回的节点副本属于文档所有，并没有父节点，要通过其他操作将其添加到文档中。<br>
    此方法不会复制添加到DOM节点的JavaScript属性，例如事件处理程序。但在IE中，会，因此复制之前最好先移除事件处理程序。。
+   + normalize()--处理文档书中的文档节点--若后代节点出现空文本节点，则删除他，若找到相邻的文本节点，则合并成一个。
 ## :snowflake:Document类型
 Document类型表示文档,document对象是window对象的一个属性，因此可作为全局变量来访问。<br>
 其特征：
@@ -143,6 +158,7 @@ alert(html == docement.childNodes[0]);  //true
 alert(heml == docement.firstChild);  //true
 ```
 document对象还有一个body属性，直接指向body属性
+
 ```javascript
 var body = document.body;
 ```
@@ -154,6 +170,14 @@ var body = document.body;
   document.title = "New page title"
   ```
 + URL:包含网页完整的URL
+	```javascript
+	//取得完整的URL
+	var url = document.URL;
+	／／取得域名
+	var domain = document.domain;
+	//取得来源页面的URL
+	var referrer = document.referrer;
+	```
 + domain:只包含页面的域名
 + referer: 保存着链接到当前页面的URL,在没有来源页面的时候，可能会包含空字符串。
 注意：只有domain是可以设置的，而且所有浏览器对domain还有一个限制，既如果域名一开始是松散的“loose”，就不能将其设置为紧绷的。("wro.com"->"pp.wro.com" false )
@@ -189,13 +213,41 @@ var body = document.body;
   var image = images["myImage"];
   ```
   要取得文档中的所有元素，可以向getElementByTagName()中传入*号。<br>
-  + getElementByName():只有HTMLDocument才具有的方法
+  + namesItem() 通过元素的name特性取得集合中的项
+	```javascript
+	<img src="myimage#" name="myImage">
+	
+	var myImage=images.namedItem("myImage");
+	//或者直接获取
+	var myImage= images["myImage"]
+	```
+  + getElementByName():只有HTMLDocument才具有的方法   最常使用此方法的情况是取得单选按钮(保证单选按钮必须具有相同的name特征)
+  ```javascript
+  <fieldset>
+  	<legend>Which color do you prefer?</legend>
+	<ul>
+		<li><input type="radio" value="red" name="color" id="colorRed">
+			<lable for="colorRed">Red</lable></li>
+		<li><input type="radio" value="green" name="color" id="colorGreen">
+			<lable for="colorGreen">green</lable></li>
+		<li><input type="radio" value="blue" name="color" id="colorBlue">
+			<lable for="colorBlue">blue</lable></li>
+	</ul>
+  </fieldset>
+  //获取所有单选按钮
+  var radius = document.getElementsByName("color");//返回一个NodeList，nameItem()只会取得第一项
+  ```
 ### 特殊集合
 + document.anchors:包含文档中所有带name的<a>元素
 + document.forms:包含文档中所有的form元素。
   + document.images 包含所有图片
   + document.link 带href特性的<a>元素
 ### DOM一致性检测
+检测DOM的功能及其版本号：
+```javascript
+var hasXmlDom = document.implementation.hasFeature("XML","1.0");	
+```
+
 ### 文档写入
 将输出流写入网页的能力：
   + write(),，原样写入，writeln()：加一个‘\n’,都只接受一个参数，可以使用这两个方法向页面动态添加内容<br>
