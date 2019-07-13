@@ -281,6 +281,15 @@ var div = document.getElementByTagName("myDiv");
 alert(div.tagName);   //"Div"在HTML中标签名始终大写
 alert(div.tagName == div.nodeName);   //true
 ```
+在HTML中，标签名始终是大写，所以再比较之前将标签名转换为相同的大小写形式，
+```javscript
+if(element.tarName == "div"){}
+//这样比较容易出错
+
+if(element.tagName.toLowerCase() == "div"){
+	//这样最好
+}
+```
 ### HTML元素
 所以HTNL元素都有HTMLElement类型表示<br>
 标准特性
@@ -326,9 +335,53 @@ setAttribute()方法既可以操作HTML特性也可以操作自定义特性。
 ```javascript
 div.removeAttribute("class");
 ```
-### atteribute
+### attributes（操作子节点，打印出子节点的相关特征）
+Element类型是使用attributes属性的唯一一个DOM节点。attributes属性中包含一个NamedNodeMap,与NodeList类似，是一个动态的集合，NameNodeMap对象拥有下列方法：
++ getNamedItem(name):返回nodeName属性等于name的节点
++ removeNamedItem(name):从列表移除nameNode属性等于name的节点
++ setNamedItem(node):向列表中添加节点，以节点的nodeName属性为索引
++ item（pos):返回位于数字pos位置处的节点
+<br>
+特别注意：attributes属性包括一系列节点，每个节点的nodeName就是特性的名称，而节点的nodeName就是特征的值。例如，要取得元素的id特征：
+```javascript
+var id = element.attributes.getNameItem("id").nodeValue;
+```
+开发人员更多会使用getAttribute(),removeAttribute(),setAttribute()，但想要遍历元素的特征，这个可以派上用场（在需要将DOM结构序列化为XML或HTML字符串时，多数会遍历元素的特征），可以将特征构造成name="value"的形式。
+```javascript
+function outputAttributes(element){
+	var pairs= new Array(),
+		attrName,
+		attrValue,
+		i,
+		len;
+	for(i=0,len=element.attributes.length;i<len;i++){
+		attrName=element.attributes[i].nodename;
+		attrValue=element.attributes[i].nodeValue;
+		pairs.push(attrName+"=\""+ attrValue+ "\"");
+	}
+	return pairs.join(" ");
+}
+```
+这是序列化长字符串时的一种常用技巧。但这个方法具有一些bug（浏览器兼容问题）改进：（使用每个节点都具有的specified属性）
+```javascript
+function outputAttributes(element){
+	var pairs= new Array(),
+		attrName,
+		attrValue,
+		i,
+		len;
+	for(i=0,len=element.attributes.length;i<len;i++){
+		attrName=element.attributes[i].nodename;
+		attrValue=element.attributes[i].nodeValue;
+		if(element.attributes[i].specified){
+			pairs.push(attrName+"=\""+ attrValue+ "\"");
+		}
+	}
+	return pairs.join(" ");
+}
+```
 ### 创建元素
-document.creatElement()
+document.creatElement(元素的标签名)
 ```javascript
 var div = docement.creatElement("div");
 ```
@@ -345,6 +398,24 @@ var div = document.creatElement("<div id=\"myDiv\" calss=\"box\"></div>");
 ```
 ### 元素的字节点
 元素的childNodes属性包含了他的所有子节点，浏览器看待子节点有明显不同。
+<br>
+注意点：不同的浏览器对于子节点有不同的看法：例如：
+```javascript
+<ul>
+	<li></li>
+	<li></li>
+	<li></li>
+</ul>
+```
+IE对次有7个节点（还包含4个文本节点），其他的只有3个<br>
+注意点：如果需要通过childNodes属性来遍历子节点，就不能忘记之一区别，通常都要先检查一下nodeType属性
+```javascript
+for(var i=0,len=element.childNodes.length;i<len;i++){
+	if(element.childNodes[i].nodeType == 1){   //判断是否为元素节点
+	 	//执行什么操作
+	}
+}
+```
 ## :snowflake:Text类型
 纯文本可以包含转义的HTML字符，但不包含HTML代码。
 <br>
@@ -354,6 +425,8 @@ var div = document.creatElement("<div id=\"myDiv\" calss=\"box\"></div>");
 + nodeValue:节点包含的文本
 + parentNode:Element
 + 没有子节点
+<br>
+可以通过nodeValue属性或Text属性访问text节点包含的文本
 操作文本节点的文本的方法 ：
 + appendData(text): 将text添加到节点的末尾
 + deleteData(offset,count):从offset指定的位置开始删除count个字符
@@ -388,13 +461,13 @@ div.firstChild.nodeValue = "some <strong>other</strong>message"
 //输出结果是：some &lt;strong&gt;...
 ```
 ### 创建文本节点
-document.createTextNode()创建文本节点
+document.createTextNode(插入节点的文本)创建文本节点
 ```javascript
-var element = document.createElement("div");
-element.className = "message";
-var text = document.createTextNode("hello,world");
-element.appendChild(text);
-document.body.appendChild(element);
+var element = document.createElement("div");  //创建一个元素div
+element.className = "message";  //给元素设置class特征
+var text = document.createTextNode("hello,world");  //创建新文本节点
+element.appendChild(text);  //将文本节点添加到div中
+document.body.appendChild(element);   //将div添加到body中
 ```
 一般每个元素只有一个文本节点，但可以包含多个子节点：
 ```javascript
@@ -422,7 +495,7 @@ document.body.appendChild(element);
 
 alert(element.childNodes.length);  //2
 
-element.normalize();
+element.normalize();   //使用此方法可以将文本同胞节点连在一起
 alert(element.childNodes.length);  //1
 alert(element.firstChild.nodeValue);  //hello worldguixu
 ```
@@ -441,19 +514,21 @@ alert(newNode.nodeValue);  //world
 ```
 分割文本节点是从文本中获取数据的一种很常用的DOM解析技术
 
-## :snowflake:Commend类型
+## :snowflake:Commend（注释）类型
 特性：
 + nodeType:8
 + nodeName:#comment
 + nodeValue:注释的内容
 + 没有子节点
-其他用法同text节点
+其他用法同text节点（可以通过nodeValue或data属性来取得注释的内容）
 ## :snowflake:CDATASection类型
 只基于XML文档，继承自Text类型，有除splitText()之外的所有方法
 + nodeType: 4
 
 ## :snowflake:DocumentType类型
+在Web服务器中不常用，所以不过多介绍
 ## :snowflake:DocumentFragment类型
+（文档片段）
 在文档中没有对应的标记。可以包含和控制节点，但不会像完整的文档那样占用额外的资源。
 + nodeType: 11
 + nodeName: "#document-fragment"
@@ -501,8 +576,43 @@ alert("");
 <a href="#title">:+1:回到目录</a>
 ## :snowflake:动态脚本
 方式：插入外部文件，直接插入JavaScript代码
-## :snowflake:动态样式
+<br>
+加载外部js文件的函数：
+```javascript
+function loadScript(url){
+	var script = document.createElement("script");
+	script.type="text/javascript";
+	script.src = url;
+	document.body.apendChild(script);
+}
+```
 
+## :snowflake:动态样式
+使用DOM代码可以很容易大的动态创建这个元素
+```javascript
+var link = document.createElement("link");
+link.rel="stylesheet";
+link.type="text/css";
+link.href="style.css";
+var head= document.getElementsByTagName("head")[0];
+head.appendChild(link);
+```
+必须将link标签添加到head中。
+<br>
+通过下面的代码可以实时的向页面中添加样式（马上就可以看到）
+```javascript
+function loadStyleStringa(css){
+	var style = document.createElement("style");
+	style.type="text/css";
+	try{
+		style.appendChild(document.createTextNode(css));
+	}catch(ex){
+		style.styleSheet.cssText = css;
+	}   //使用try catch解决IE的兼容性问题
+	var head= document.getElementsByTagName("head")[0];
+	head.appendChild(style);
+}
+```
 ## :snowflake:操作表格
 表格行，单元格，表头
 ```javascrript
@@ -539,7 +649,7 @@ alert("");
 P282
 ## :snowflake:使用NodeList
 NodeList,NameNodeMap,HTMLCollrction，都是动态的，当文档结构发生改变的时候，都会发生改变，从本质上讲，所有NodeList对象都是在访问DOM实时进行的查询
-，以下代码会无限循环
+，以下代码会无限循环（因为这个集合是动态的）
 ```javascript
 var divs = document.getElementsByTagName("div"),i,div;
 for(i=0;i<divs.length;i++)
