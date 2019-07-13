@@ -399,7 +399,7 @@ var div = document.creatElement("<div id=\"myDiv\" calss=\"box\"></div>");
 ### 元素的字节点
 元素的childNodes属性包含了他的所有子节点，浏览器看待子节点有明显不同。
 <br>
-注意点：不同的浏览器对于子节点有不同的看法：例如：
+注意点：不同的浏览器对于子节点有不同的看法：例如：<br>
 ```javascript
 <ul>
 	<li></li>
