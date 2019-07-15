@@ -9,7 +9,7 @@
 <p id="p1"></p>
 
 ## :banana:选择符API 
-<a href="#title">:sweet_potato:回到目录</a>
+<a href="#title">:sweet_potato:回到目录</a><br>
 就是根据css选择符选择与某个模式匹配的DOM元素（jquery 就是如此）
 #### :corn:querySelector()方法
 ```javascript
@@ -30,7 +30,7 @@ var ems=document.getElementById("myDiv").querySelectorAll("em");
 <p id="p2"></p>
 
 ## :banana:元素遍历
-<a href="#title">:sweet_potato:回到目录</a>
+<a href="#title">:sweet_potato:回到目录</a><br>
 为了解决大多数浏览器都会放回文本节点，导致childNodes和firstChild()等属性行为不一致，增加了5个属性：
 + childElementCount:返回子元素（不包括文本节点和注释）的个数
 + firstElementChild：指向的一个子元素（firstChild的元素版）
@@ -60,7 +60,7 @@ var i ,
 <p id="p3"></p>
 
 ## :banana:HTML5
-<a href="#title">:sweet_potato:回到目录</a>
+<a href="#title">:sweet_potato:回到目录</a><br>
 #### :corn:与类相关的拓充
 随着class的使用广泛，产生了一下方法：<br>
 + getElementsByClassName(一个或多个类名的字符串)，类名先后顺序不重要<br>
@@ -119,9 +119,43 @@ alert(document.activeElement===button);
 var head = document.head  || document.getElementByTagName("head")[0];
 ```
 #### :corn:字符集属性
+新增了几个与文档字符串集相关的属性：<br>
++ Charset：代表文档中实际使用的字符集（也可以用来指定新的字符集，默认是UTF-16），
+```javascript
+alert(document.charset);
+document.charset="UTF-8";
+```
++ defaultCharset:表示浏览器及操作系统的设置
 #### :corn:自定义数据类型
+可以添加自己定义的属性但要加前缀data。映射方式：自定义：data-name-->name <br>
+```javascript
+<div if="myDiv" data-appId="111" data-name="guixu"></div>
+
+var div=document.getElementById("muDiv");
+
+var appId=div.dataset.appId;
+var name=div.dataset.name;
+```
 #### :corn:插入标记
++ innerHTML :返回与调用函数的所有子节点对应的HTML标记。<br>
+此方法的限制：通过此方法插入<script>元素并不会执行其中的脚本
++ outerHTML：返回他的元素及所有子节点的HTML标签（包括自己本身）<br>
+```javascript
+div.outerHTML = "<p>This is a paragraph.</p>"
+//同下面的代码
+var p=document.createElement("p");
+p.appendChild(document.createTextNode("this is a paragraph."));
+div.parentNode.replaceChild(p,div);    
+```
++ insertAdjacentHTML(插入的位置，要插入的HTML文本):
+   + beforebegin:在当前元素之前插入一个紧邻的同辈元素
+   + afterbegin:在当前元素之下插入一个新的子元素，或在第一个子元素之前添加一个新元素
+   + beforeend：在当前元素之下插入一个新的子元素，或在最后一个子元素之前添加一个新元素
+   + afterend：在当前元素之后插入一个紧邻的同辈元素
++ 内存问题：在替换元素之前，最好先手动删除被替换的元素的所有事件处理程序和javascript对象属性
+    
 #### :corn:scorllIntoView()方法
+如果给这个方法传入true作为参数，或者不传入任何参数，那么窗口滚动之后会让调用元素的顶部与视口顶部平奇
 <p id="p4"></p>
 
 ## :banana:专有拓展
