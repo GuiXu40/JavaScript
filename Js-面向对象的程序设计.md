@@ -244,6 +244,7 @@ var o=new Object();
 Person.call(o,"guixu",18,"asdf");
 o.sayName();  //"guixu"
 ```
++ 构造函数的问题:每个方法都要在每个实例上重新创建一遍
   :flashlight:注意点：<br>
       每个方法都要在每个实例上重新创建一遍。
       ```javascript
@@ -261,9 +262,10 @@ o.sayName();  //"guixu"
           alert(this.name);
         }
       ```
+这样:person1和person2对象就共享了全局作用域中定义的同一个sayName()函数,但这样自定义的引用类型就没有封装性了-->解决方法:原型模式
+      
 ### :bomb:1.1.3原型模式
-#### :exclamation:原型
-  每个函数都包含prototype(原型)属性，相当于指针，可以直接将信息添加到原形函数中。
+  每个函数都包含prototype(原型)属性，相当于指针，指向一个对象,可以直接将信息添加到原形函数中。.prototype的用途:包含可以有特定类型的所有实例共享的属性和方法(意思就是:prototype就是调用构造函数而创建的那个对象实例的原型对象),好处就是:让所有对象实例共享他所包含的属性和方法-->将属性和方法添加到原型对象中
   ```javascript
     function Person(){
     }
@@ -274,6 +276,7 @@ o.sayName();  //"guixu"
       alert(this.name);
     };
   ```
++ 理解原型对象:
   如果在实例中创建该属性，该属性将会屏蔽原型中的属性
   ```javascript
     function Person(){
@@ -338,7 +341,7 @@ o.sayName();  //"guixu"
   return o;
  }
  ```
- <p id="#a3"></p>
+<p id="#a3"></p>
  
 ## :unlock:1.3继承
 
