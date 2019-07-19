@@ -8,7 +8,29 @@
 
 ## :unlock:1.1理解对象
 <a href="#title">:bulb:返回目录</a>
+创建对象最简单的方法就是创建一个Object的实例,然后再为它添加属性和方法
+```JavaScript
+var person = new Object();
+person.name="guixu";
+person.age=18;
+person.job="fasdafs";
+person.sayHello=function(){
+    alert("hello,world");
+}
+```
+这是早期的方法,几年后对象字面量成为创建这种方式的首选模式,改进如下:
+```JavaScript
+var person = {
+    name: "guixu",
+    age: 18.
+    job: "asdf",
+    sayHello: function(){
+        alert("hello,world");
+    }
+}
+```
 ### :bomb:1.1.1属性类型
+为了表示特征是内部值,将他们放在两队方括号中
 #### :exclamation:数据属性
   【1】Configurable:能否痛过delete删除属性而重新定义属性。默认：true。<br>
   【2】Enumerable:能否通过for-in循环返回属性。默认：true。<br>
