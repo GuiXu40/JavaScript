@@ -277,6 +277,23 @@ o.sayName();  //"guixu"
     };
   ```
 + 理解原型对象:
+只要创建了一个新函数,就会根据一组特定的规则为该函数创建一个prototype属性,这个属性指向函数的原型函数.在默认情况下,所有原型函数都会自动获得一个constructor(构造函数)属性,这个属性是一个指向prototype属性所在函数的指针.<br>
+创建了自定义的构造函数之后,其原型对象默认只会取得constructor属性,其他方法,都是从Object继承而来.当调用 构造函数创建一个新实例之后,该实例的内部将包含一个指针(内部属性),指向构造函数的原型函数[[prototype]].
+<br>
+   + 虽然所有现实中都无法访问到[[prototype]],但可以通过isPrototypeOf()方法来确定对象之间是否存在这种关系
+   ```JavaScript
+   alert(Person.prototype.isPrototypeOf(person1));  //true
+   alert(Person.prototype.isPrototypeOf(person2));  //true
+   ```
+   因为他们内部都有一个指向Person.prototype的指针<br>
+   + Object.getPrototypeOf(),这个方法返回[[prototype]]的值
+   ```JavaScript
+   alert(Object.getPrototypeOf(person1)==Person.prototype);  //true
+   alert(Object.getPrototypeOf(person1).name);  //"guixu"
+   ```
+   当代码读取到某个对象的某个属性时,都会执行一次搜索,首先从对象实例本身开始,找到了,则返回该属性的值,如果没有,则继续搜索指针指向的原型对象
+<br>
+虽然可以通过对象实例访问保存在原型中的值,单却不可以通过对象实例重写原型对象中的值,
   如果在实例中创建该属性，该属性将会屏蔽原型中的属性
   ```javascript
     function Person(){
@@ -294,6 +311,108 @@ o.sayName();  //"guixu"
     alert(person1.name);  //"hhh"来自实例
     alert("person2.name");//"fff"来自原型
   ```
+但是,通过delete操作符则可以完全删除实例属性
+  ```javascript
+    function Person(){
+    }
+    Person.prototype.name="fff";
+    Person.prototype.age=age;
+    Person.prototype.job=job;
+    Person.prototype.sayName=function(){
+      alert(this.name);
+    };
+    
+    var person1=new Person;
+    var person2=new Person;
+    person1.name="hhh";
+    alert(person1.name);  //"hhh"来自实例
+    alert("person2.name");//"fff"来自原型
+    
+    delete person1.name;
+    alert(person1.name);  //"fff"  来自原型
+  ```
+  + 使用hasOwnPrototype()可以检测一个属性是否存在于实例中,还是在原型中
+  ```JavaScript
+      function Person(){
+    }
+    Person.prototype.name="fff";
+    Person.prototype.age=age;
+    Person.prototype.job=job;
+    Person.prototype.sayName=function(){
+      alert(this.name);
+    };
+    
+    var person1=new Person;
+    var person2=new Person;
+    
+    alert(person1.hasOwnPrototype("name"));  //false
+    
+    person1.name="guixu";
+    alert(person1.name);  //"guixu" 来自实例
+     alert(person1.hasOwnPrototype("name"));  //true
+  ```
+  + 原型与in操作符:有两种方式使用in操作符:单独使用和for-in循环使用.在单独使用时,in操作符会在通过对象能够访问给定属性时返回true(无论该属性存在于实例或原型中)
+  ```JavaScript
+  function Person(){
+    }
+    Person.prototype.name="fff";
+    Person.prototype.age=age;
+    Person.prototype.job=job;
+    Person.prototype.sayName=function(){
+      alert(this.name);
+    };
+    
+    var person1=new Person;
+    var person2=new Person;
+    
+    alert(name in person1);  //true
+  ```
+  在使用for-in循环时,返回的事能够通过对象访问的,可枚举的(enumerated)属性,屏蔽了原型中不可枚举的属性<br>
+  + Object.keys():可以取得所有可枚举的实例属性,接收一个对象为参数,返回一个包含所有可枚举属性的字符串数组
+  ```JavaScript
+    function Person(){
+    }
+    Person.prototype.name="fff";
+    Person.prototype.age=age;
+    Person.prototype.job=job;
+    Person.prototype.sayName=function(){
+      alert(this.name);
+    };
+    
+    var key=Object.keys(Person.prototype);
+    alert(keys);   //"name,age,job,sayName"
+    
+    var p1=new Person();
+    p1.name="gaoju";
+    p1.age=18;
+    var p1keys=Object.keys(p1);
+    alert(p1keys);  //"name,age"
+  ```
+  + Object.getOwnPropertyNames():得到所有实例属性,无论是否可以枚举
+  + 更简单的原型语法:用一个包含所有属性和方法的对象字面量来重写整个原型对象
+  ```JavaScript
+  function Person(){
+        Person.prototype={
+            name: "guixu",
+            age:18,
+            job:"afds",
+            sayName: function(){
+                alert(this.name);
+            }
+        }
+  }
+  ```
+  此方法的弊端:constructor属性不在指向Person了,现在指向新的constructor对象(Object函数),尽管instanceof操作符还能返回正确的结果.如果constructor的值很重要,可以先这样:
+  ```JavaScript
+  function Person(){
+        person.prototype={
+            constructor:Person,
+            name:"guixu",
+            age:18
+        }
+  }
+  ```
+  但这种方式会导致[[Enumerable]]特性为true
   #### :exclamation:原型的动态性
   尽管可以随时为原形添加属性和方法，但如果重写整个原型对象，就等于切断了构造函数与最初原型的关系。
   ```javascript
@@ -312,8 +431,63 @@ o.sayName();  //"guixu"
     friend.sayName();  //error
   ```
   先创造一个Person的一个实例，然后又重写了其原型对象，但调用时发生了错误，因为friend指定的原型不包含以该名字命名的属性。
+  <br>
+  + 原生对象的原型,原生对象的引用类型,也是这种方法创建的,通过原生对象的原型,不仅可以取得默认方法的引用,还可以自己定义新方法.例如:
+  ```JavaScript
+  string.prototype.startsWith=function (text){
+        return this.indexOf(text)==0;
+  }
+  
+  var msg="hello world";
+  alert(msg.startsWith("hello")); //true
+  ```
+  + 原型对象的问题:实例共享,没有私有属性
+  ```JavaScript
+    function Person(){
+        Person.prototype={
+            constructor:Person,
+            name: "guixu",
+            age:18,
+            job:"afds",
+            friends:["hhh","jjj"],
+            sayName: function(){
+                alert(this.name);
+            }
+        }
+  }
+  
+  var p1=new Person();
+  var p2=new person();
+  
+  p1.friends.push("kkk");
+  
+  alert(p1.friends);  //"hhh,jjj,kkk"
+  alert(p2.friends);  //"hhh,jjj,kkk"
+  ```
 ### :bomb:1.1.4组合使用构造函数和原型函数
-  所有共享的属性都在原型中定义
+  所有共享的属性都在原型中定义,从而解决原型对象的问题,改进:
+```JavaScript
+function Person(name,age,job){
+    this.name=name;;
+    this.age=age;
+    this.job=job;
+    this.friends = ["hhh","jjj"];
+}
+
+Person.prototype={
+    constructor: Person,
+    sayName:function(){
+        alert(this.name);
+    }
+}
+
+var p1=new Person("guixu",18,"fasd");
+var p2=new Person("gaoju",22,"fasdasd");
+
+p1.frends.push("kkk");
+  alert(p1.friends);  //"hhh,jjj,kkk"
+  alert(p2.friends);  //"hhh,jjj"
+```
 ### :bomb:1.1.5动态原型模式
   将所有信息都封装在构造函数中，通过检查莫个应该存在的方法是否有效，来决定是否需要初始化原型。
   ```javascript
@@ -321,6 +495,7 @@ o.sayName();  //"guixu"
       this.name=name;
       this.age=age;
       this.job=job;
+      //下面的代码只会在初次调用构造函数时才会执行.此后,原型已经完成初始化,不需要在做什么修改
       if(typeof this.sayName != "function"){
         Person.prototype.sayName=function(){
           alert("this.name");
@@ -328,6 +503,7 @@ o.sayName();  //"guixu"
       }
     }
   ```
+不能使用对象字面量重写原型(会切断现有实例与新原型之间的联系)
 ### :bomb:1.1.6寄生构造函数模型
  ```javascript
  function Person(name,age,job){
@@ -341,9 +517,15 @@ o.sayName();  //"guixu"
   return o;
  }
  ```
+ 不能用instanceof来确定对象类型<br>
+ + 稳妥构建函数模型,和寄生差不多
 <p id="#a3"></p>
  
 ## :unlock:1.3继承
 
-### :bomb:1.3.1原型链
-
+#### :bomb:1.3.1原型链
+#### :bomb:1.3.2借用构造函数
+#### :bomb:1.3.3组合继承
+#### :bomb:1.3.4原型式继承
+#### :bomb:1.3.5寄生式继承
+#### :bomb:1.3.6寄生组合式继承
