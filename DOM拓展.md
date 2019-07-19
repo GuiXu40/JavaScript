@@ -161,8 +161,39 @@ div.parentNode.replaceChild(p,div);
 ## :banana:专有拓展
 <a href="#title">:sweet_potato:回到目录</a>
 #### :corn:文档模式
+新概念:文档模式(document mode),页面的文档模式决定了可以使用什么功能(决定了你可以使用哪个级别的css和JavaScript可以使用那些API),要强制浏览器以某种模式喧染页面,可以使用HTTP头部信息X-UA-Compatible,或通过等价的<meta>标签来设置
+```JavaScript
+<meta http-equiv="X-UA-Compatible" content="IE=IEVersion">
+```
+通过document.documentMode属性可以知道给页面设定的是什么文档模式
+```JavaScript
+var mode = document.documentMode;
+alert(mode);     //推荐不了解
+```
 #### :corn:children属性
+```JavaScript
+var childCount = element.children.length;
+var firstChild = element.children[0];
+```
 #### :corn:contains()方法
-#### :corn:插入文本
-#### :corn:滚动
+此方法用于检验某个节点是不是你的子节点
+```JavaScript
+alert(document.documentElement.contains(document.body));
+```
+使用DOM3的compareDocumentPosition()也能够确定节点的关系,返回一个表示该关系的位掩码(bitmask)<br>
 
+掩码|节点关系
+---|:--:
+1| 无关
+2| 居前 
+4| 居后
+8| 包含
+16| 被包含
+
+#### :corn:插入文本
++ innerText:可以操作元素中包含的所有文本内容,包括文档树中的文本.在读取值时,会按照由浅入深的顺序,将子文档书中的所有文档拼接起来,在通过innerText写入值的时候,会删除元素中的所有子节点,插入包含相应值的文本内容
++ outerText:作用范围扩大到了包含调用他的节点之外,与innerText一样
+#### :corn:滚动
++ scrollIntoViewIfNeeded(alignCenter):只有当当前元素在视口中不可见时,才滚动浏览器窗口或容器窗口,最终让他可见
++ scrollByLines(lineCount):将元素的内容滚动指定的行高,lineCount可以是正值,也可以是负值
++ scrollByPages(pageCount):将元素的内容滚动指定的页面高度
