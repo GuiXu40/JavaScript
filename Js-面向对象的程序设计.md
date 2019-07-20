@@ -561,9 +561,109 @@ alert(Object.prototype.isPrototypeOf(instance));  //true
 alert(SuperType.prototype.isPrototypeOf(instance));  //true
 alert(SubType.prototype.isPrototypeOf(instance));  //true
 ```
-+ 谨慎的定义方法,子类型有时候需要覆盖
++ 谨慎的定义方法,子类型有时候需要覆盖超类型中的某个方法,或者添加某个方法,但不管怎么样,给原型添加到代码一定要放在替代原型的语句之后
+```JavaScript
+function SuperType(){
+    this.property = true;
+}
+
+SuperType.prototype.getSuperValue = function(){
+    return this.property;
+};
+
+function SubType(){
+    this.subproperty=false;
+}
+
+//继承了SuperType
+SubType.prototype=new SuperType();
+
+SubType.prototype.getSubValue=function(){
+    return this.subproperty;
+};
+
+//重写超类型中的方法
+SubType.prototype.getSuperValue=function(){
+    return false;
+}
+
+var instance = new SubType();
+alert(instance.getSuperValue());  // false
+```
+注意点:在通过原型链实现继承时,不能使用对象字面量创建原型方法<br>
++ 原型链的问题:(1)包含引用类型的原型(包含引用类型值的原型函数属性会被所有实例共享),(2).在创建子类型的实例时,不能向超类型的构造函数中传递参数
 #### :bomb:1.3.2借用构造函数
+为了解决原型中包含引用类型的值所带来的问题,使用了一种借用构造函数(constructor stealing)的技术(也叫伪造对象或经典继承):思想就是:在子类型构造函数的内部调用超类型构造函数
+```JavaScript
+function SuperType(){
+    this.color=["red","blue","green"];
+}
+
+function SubType(){
+    SuperType.call(this);
+}
+
+var instance1=new SubType();
+instance1.color.push("black");
+alert(instance1.colors); //"red,blue,green,black"
+
+var instance2=new SubType();
+alert(instance2.colors);  //"red,blue,green"
+```
+这样SubType的每个实例都会具有自己的colors属性了,这份方法的优势:<br>
++ 可以再子类型构造函数中向超类型构造函数传递参数
+```JavaScript
+function SuperType(name){
+    this.name=name;
+}
+
+function SubType(){
+    //继承了SuperType,同时还传递了参数
+    SuperType.call(this,"guixu");
+    this.age="18";
+}
+
+var instance = new SubType();
+alert(instance.name);  //"guixu"
+alert(instance.age);  //18
+```
+为了确保SuperType构造函数不会重写子类型的属性,可以再调用超类型构造函数后,再添加应该在子类型中定义的属性<br>
++ 借用构造函数的问题:函数复用
 #### :bomb:1.3.3组合继承
+也叫伪经典继承,将原型链和借用构造函数的技术组合到一起,思路是:使用原型链实现对原型属性和方法的继承,而通过构造函数来实现对实例属性的继承
+```JavaScript
+function SuperType(name){
+    this.name=name;
+    this.colors=["red","blue","green"];
+}
+
+SuperType.prototype.sayName=function(){
+    alert(this.name);
+};
+
+function SubType(name,age){
+    SuperType.call(this,name);
+    
+    this.age=age;
+}
+
+//继承方法
+SubType.prototype=new SuperType();
+SubType.prototype.constructor=SubType;
+SubType.prototype.sayAge=function(){
+    alert(this.age);
+};
+var instance1=new SubType("guixu",18);
+isntance1.colors.push("black");
+alert(instance.colors);  //"red,blue,green,black"
+instance1.sayNmae();   //"guixu"
+instance1.sayAge();  //18
+
+var instance1=new SubType("gaoju",20);
+alert(instance.colors);  //"red,blue,green"
+instance1.sayNmae();   //"gaoju"
+instance1.sayAge();  //20
+```
 #### :bomb:1.3.4原型式继承
 #### :bomb:1.3.5寄生式继承
 #### :bomb:1.3.6寄生组合式继承
