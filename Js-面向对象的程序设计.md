@@ -519,11 +519,49 @@ p1.frends.push("kkk");
  ```
  不能用instanceof来确定对象类型<br>
  + 稳妥构建函数模型,和寄生差不多
-<p id="#a3"></p>
+<p id="a3"></p>
  
 ## :unlock:1.3继承
-
+<a href="#title">:bulb:返回目录</a><br>
+许多语言都支持两种继承方式:接口继承和实现继承,接口继承只继承方法签名,而实现继承则继承实际的方法.ECMAScript只支持实现继承,主要是依靠原型链来实现的
 #### :bomb:1.3.1原型链
+基本思路:利用原型让一个引用类型继承另一个引用类型的属性和方法,基本模式如下:
+```JavaScript
+function SuperType(){
+    this.property = true;
+}
+
+SuperType.prototype.getSuperValue = function(){
+    return this.property;
+};
+
+function SubType(){
+    this.subproperty=false;
+}
+
+//继承了SuperType
+SubType.prototype=new SuperType();
+
+SubType.prototype.getSubValue=function(){
+    return this.subproperty;
+};
+
+var instance = new SubType();
+alert(instance.getSuperValue());  // true
+```
+instance指向SubType的原型,SubType的原型又指向SuperType的原型,要注意instance.constructor现在指向的是SuperType<br>
++ 别忘记了默认的原型,所有的引用类型都继承了Object,所有函数的默认原型都是Object的实例,因此默认原型都会包含一个内部指针,指向Object.prototype
++ 确定原型和实例的关系,两种方法:使用instanceof操作符,第二种使用isPrototypeOf()方法
+```JavaScript
+alert(instance instanceof Object);  //true
+alert(instance instanceof SuperType);  //true
+alert(instance instanceof Subtype);  //true
+
+alert(Object.prototype.isPrototypeOf(instance));  //true
+alert(SuperType.prototype.isPrototypeOf(instance));  //true
+alert(SubType.prototype.isPrototypeOf(instance));  //true
+```
++ 谨慎的定义方法,子类型有时候需要覆盖
 #### :bomb:1.3.2借用构造函数
 #### :bomb:1.3.3组合继承
 #### :bomb:1.3.4原型式继承
