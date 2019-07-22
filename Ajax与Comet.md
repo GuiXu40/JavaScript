@@ -116,26 +116,195 @@ xhr.onreadystatechange=function(){
 xhr.open("get","example.php","true");
 xhr.send(null);
 ```
+还可以调用abort()方法取消异步请求
 #### :corn:HTTP头部信息
+每个HTTP请求都会带有相应的头部信息
+
+头部信息|意义
+---|:--:
+Accept|浏览器可以处理的内容类型
+Accept-Charset|浏览器能够显示的字符集
+Accept-Encoding|浏览器能够处理的压缩编码
+Accept-Language|浏览器当前设置的语言
+Connection|浏览器与服务器之间连接的类型
+Cookire|当前页面设置的任何Cookie
+Host|发送请求的页面所在的域
+Referer|发送请求的页面的URL
+User-Agent|浏览器用户代理字符串
+
+setRequestHeader()可以设置自定义的头部信息
+```JavaScript
+var xhr = createXHR();
+xhr.onreadystatechange=function(){
+    if(xhr.readyState==4){
+        if(xhr.status>=200 && xhr.status<300 || xhr.status==304){
+            alert(xhr.responseText);
+        }else{
+            alert("没有很成功");
+        }
+    }
+};
+xhr.open("get","example.php","true");
+xhr.setRequestHeader("MyHeader","myValue");   //位置
+xhr.send(null);
+```
+```JavaScript
+var myHeaader=xhr.getResponseHeader("myHeader");   //取得相应的响应头部信息
+var allHeaders=xhr.getAllResponseHeaders();    //包含所有头部信息的长字符串
+```
+getAllResponseHeaders()会返回多行文本
+```JavaScript
+Data: Sun,14 Nov 2004 18:04:03 GMT
+Server: Apache/1.3.29(Unix)
+Vary:Accept
+X-Powered-By: PHP/4.3.8
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+```
 #### :corn:GET请求
+查询字符串中每个参数的名称和值必须使用encodeURLComponent()进行编码,才能放在URL的末尾,所有名值对都必须由(&)分隔
+```JavaScript
+xhr.open("get","example.php?naem1=value&name2=value2",true);
+//实现函数
+function addURLParam(url,name,value){
+    url+=(url.indexOf("?")==-1? "?":"&");   //检查URL中是否包含?
+    url+=encodeURLComponent(name)+ "="+encodeURLComponent(value);
+    return url;
+}
+```
+使用函数来构建URL
+```JavaScript
+var url="example.php";
+
+//添加参数
+url=addURLParam(url,"naem","guixu");
+```
 #### :corn:POST请求
 <p id="p2"></p>
 
 ## :banana:XMLHttpRequest 2级
 <a href="#title">:sweet_potato:回到目录</a><br>
 #### :corn:FromData
+FormData类型,创建与表单格式相同的数据
+```JavaScript
+var data = new FormData();
+data.append("name","guixu");   //append()方法接收两个参数,键和值
+```
+创建FormData的实例后,可以直接传给send()方法
+```JavaScript
+var xhr = createXHR();
+xhr.onreadystatechange=function(){
+    if(xhr.readyState==4){
+        if(xhr.status>=200 && xhr.status<300 || xhr.status==304){
+            alert(xhr.responseText);
+        }else{
+            alert("没有很成功");
+        }
+    }
+};
+xhr.open("post","example.php","true");
+var form=document.getElementById("user-info");
+xhr.send(new FormData(form));
+```
 #### :corn:超时设定
+**timeout**属性,表示请求在等待响应多少毫秒之后终止
+```JavaScript
+var xhr = createXHR();
+xhr.onreadystatechange=function(){
+    if(xhr.readyState==4){
+        try{
+            if((xhr.status>=200 && xhr.status<300) || xhr.status==304){
+                alert(xhr.respenseText);
+            }else {
+                alert("没有成功")
+            }
+        }catch(ex){
+            //假设由ontimeout事件处理程序处理
+        }
+    }
+}
+
+xhr.open("get","timeout.php",true);
+xhr.timeout=1000 ;  //将超时设置为1秒
+xhr.ontimeout = function(){
+    alert("请求没有回应");
+};
+xhr.send(null);
+```
 #### :corn:overrideMimeType
+用于重写XHR响应的MIME类型
 <p id="p3"></p>
 
 ## :banana:进度事件 
 <a href="#title">:sweet_potato:回到目录</a><br>
+客户端服务器通信有关的事件:
+
+事件|触发时间
+---|:--:
+loadstart|在接收到响应数据的第一个字节触发
+progress|在接收响应期间不断地触发
+error|在请求发生错误时触发
+abort|在因为调用abort()方法而终止连接是触发
+load|在接收到完整的响应数据时触发|
+loadend|在通信完成或触发error.abort,load事件后触发
+
 #### :corn:load事件
+用于代替readystatechange事件,onload事件处理程序会接受到event对象,其target属性指向XHR对象实例
+```JavaScript
+var xhr = createXHR();
+xhr.onload=function(){
+    if(xhr.readyState==4){
+        if(xhr.status>=200 && xhr.status<300 || xhr.status==304){
+            alert(xhr.responseText);
+        }else{
+            alert("没有很成功");
+        }
+    }
+};
+xhr.open("get","example.php","true");
+xhr.send(null);
+```
 #### :corn:progress事件
+onprogress事件处理程序会接受到一个event事件,包含的属性有:
+
+属性名|作用
+---|:--:
+target|指向XHR对象
+lengthComputable|表示进度信息是否可用的布尔值
+position|表示已经接收的字节数
+totalSize|根据Content-Length响应头部确定的预字节数
+
+创建一个进度指示器
+```JavaScript
+var xhr = createXHR();
+xhr.onload=function(){
+    if(xhr.readyState==4){
+        if(xhr.status>=200 && xhr.status<300 || xhr.status==304){
+            alert(xhr.responseText);
+        }else{
+            alert("没有很成功");
+        }
+    }
+};
+xhr.onprogress = function(event){
+    var divStatus=ddocument.getELementById("status");
+    if(event.lengthComputable){
+        divStatus.innerHTML = "Received"+event.position+"of"+event.totalSize+" bytes";
+    }
+}
+xhr.open("get","example.php","true");
+xhr.send(null);
+```
 <p id="p4"></p>
 
 ## :banana:跨域源资源分享 
 <a href="#title">:sweet_potato:回到目录</a><br>
+CORS(Cross-Origin Resource Sharing,跨域资源共享):使用自定义的HTTP头部让浏览器与服务器进行沟通,从而决定请求或响应是否成功,还是失败<br>
+需要附加一个Origin头部:包括页面的原信息(协议,域名,端口)
+```JavaScript
+Origin: http://www.baidu.com
+```
+如果服务器认为这个请求可以接收,就在Access-Control-Allow-Origin头部中返回相同的原信息
 #### :corn:IE对CORS的实现
 #### :corn:其他浏览器对CORS的实现
 #### :corn:Preflighted Requests
