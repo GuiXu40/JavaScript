@@ -61,11 +61,61 @@ function createXHR(){
 ```
 #### :corn:XHR的用法 
 在使用XHR对象时,先调用open()方法
-<table><tr><td bgcolor=orange>open()方法并不会真正的发送请求</td></tr></table><br>
-
+<font color=gray size=72>open()方法并不会真正发送请求</font>
 第二步:调用send()方法.<br>
 
-**open()**:接受3个参数--要发送请求的类型(get,POST等),请求的URL,表示是否异步发送请求的布尔值
+**open()**:接受3个参数--要发送请求的类型(get,POST等),请求的URL,表示是否异步发送请求的布尔值<br>
+**只能向同一个域中使用相同端口和协议的URL发送请求**<br>
+```JavaScript
+xhr.open("get","example.php",false);
+xhr.send(null);
+```
+send()方法接收一个参数,就是请求主体发送的数据.如果不需要请求主体发送数据,则必须传入null<br>
+由于这次响应是同步的,在收到响应后,响应的数据会自动填充XHR对象的属性,相关属性介绍如下:<br>
+
+属性|作用
+---|:--:
+responseText|作为响应主体被返回的文本
+responseXML|如果响应的内容是"text/xml"或 "application/xml",这个属性中将保存包含着响应数据的的XML DOM文档
+status|响应的HTTP状态
+statusText|HTTP状态的说明
+
+在接收到响应之后,想检查status属性,,将HTTP状态码为200作为成功的标志,此时responseText属性的内容已经就绪,在内容正确的情况下,responseXML也可以访问了,状态资源码**304**表示请求的资源没有被修改.<br>
+检查代码:
+```JavaScript
+xhr.open("get","example.php","false");
+xhr.sned(null);
+if(xhr.status>=200 && xhr.status<300 || xhr.status==304){
+    alert(xhr.responseText);
+}else{
+    alert("没有很成功");
+}
+```
+在更多的情况下,使用异步请求,此时,可以检测xhr对象的readyState属性[表示请求/响应过程的当前活动阶段],属性可取的值为:
+
+属性可取的值|阶段信息
+---|:--:
+0:未初始化|尚未调用open()方法
+1:启动|已经调用open()方法,但未调用send()方法
+2:发送|已经调用send()方法,但尚未接收响应
+3:接收|已经接收到部分响应数据
+4:完成|已经接收到全部数据
+
+只要readyState属性值变化一次,就会触发一次readystatehange()事件
+```JavaScript
+var xhr = createXHR();
+xhr.onreadystatechange=function(){
+    if(xhr.readyState==4){
+        if(xhr.status>=200 && xhr.status<300 || xhr.status==304){
+            alert(xhr.responseText);
+        }else{
+            alert("没有很成功");
+        }
+    }
+};
+xhr.open("get","example.php","true");
+xhr.send(null);
+```
 #### :corn:HTTP头部信息
 #### :corn:GET请求
 #### :corn:POST请求
