@@ -34,7 +34,38 @@ function createXHR(){
     return new ActiveXObject(arguments.callee.activeXString);
 }
 ```
+大多数浏览器都支持原生的XHR对象,可以直接使用XHR的XMLHttpRequest()构造函数
+```
+var xhr=new XMLHttpRequest();
+```
+想支持IE的早期版本,就可以在createXHR()加入对原生对象的支持
+```JavaScript
+function createXHR(){
+    if(typeof XMLHttpRequest != "undefined"){
+        return new XMLHttpRequest();
+    }else if(typeof arguments.callee.activeXString != "string"){
+                var versions = ["MSXML2.XMLHttp.6.0","MSXML2.XMLHttp.3.0","MSXML2.XMLHttp"],
+            i,len;
+            
+        for(i=0,len=versions.length;i<len;i++){
+            try{
+                new ActiveXObject(version[i]);
+                arguments.callee.activeXString = version[i];
+                break;
+            }catch(ex){
+                //跳过
+            }
+        }
+    }
+}
+```
 #### :corn:XHR的用法 
+在使用XHR对象时,先调用open()方法
+<table><tr><td bgcolor=orange>open()方法并不会真正的发送请求</td></tr></table><br>
+
+第二步:调用send()方法.<br>
+
+**open()**:接受3个参数--要发送请求的类型(get,POST等),请求的URL,表示是否异步发送请求的布尔值
 #### :corn:HTTP头部信息
 #### :corn:GET请求
 #### :corn:POST请求
