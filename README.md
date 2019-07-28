@@ -15,19 +15,4 @@
 ## :banana: 
 <a href="#title">:sweet_potato:回到目录</a><br>
 #### :corn: 
-<p id="p2"></p>
-
-## :banana: 
-<a href="#title">:sweet_potato:回到目录</a><br>
-#### :corn: 
-<p id="p3"></p>
-
-## :banana: 
-<a href="#title">:sweet_potato:回到目录</a><br>
-#### :corn: 
-<p id="p4"></p>
-
-## :banana: 
-<a href="#title">:sweet_potato:回到目录</a><br>
-#### :corn: 
 ---------------------------------------------------
