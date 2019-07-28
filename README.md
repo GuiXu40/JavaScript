@@ -3,7 +3,7 @@
 ---
 # 目录
 :fire:<a href="在HTML中使用JavaScript.md">在HTML中使用JavaScript</a><br>
-:fire:<a href="基本概念.md">基本概念</a><br>
+:fire:<a href="基础概念.md">基础概念</a><br>
 :fire:<a href="变量,作用域和内存问题.md">变量,作用域和内存问题</a><br>
 :fire:<a href="引用类型.md">引用类型</a><br>
 :fire:<a href="Js-面向对象的程序设计.md">面向对象的程序设计</a><br>
