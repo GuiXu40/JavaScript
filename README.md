@@ -16,14 +16,14 @@
 :fire:<a href="Ajax与Comet.md">Ajax和comet</a><br>
 
 -------------------代码模板----------------------------
+
+# -----------------标题-----------------
 <p id="title"></p>
 
-# :strawberry:标题
+## :strawberry:目录
 
 <a href="#p1">:peach:</a><br>
 <a href="#p2">:peach:</a><br>
-<a href="#p3">:peach:</a><br>
-<a href="#p4">:peach:</a><br>
 <p id="p1"></p>
 
 ## :banana: 
