@@ -195,3 +195,4 @@ align-self属性允许单个项目有与其他项目不一样的对齐方式，�
 
 
 该属性可能取6个值，除了auto，其他都与align-items属性完全一致
+## 参考:<a href="http://www.ruanyifeng.com/blog/2015/07/flex-examples.html">阮一峰flex实例</a>
