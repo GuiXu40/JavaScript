@@ -25,7 +25,8 @@ Webkit 内核的浏览器，必须加上-webkit前缀。
 ```
 注意，**设为 Flex 布局以后，子元素的float、clear和vertical-align属性将失效**
 ## :sweat_drops:基本概念
-采用 Flex 布局的元素，称为 Flex 容器（flex container），简称"容器"。它的所有子元素自动成为容器成员，称为 Flex 项目（flex item），简称"项目"
+采用 Flex 布局的元素，称为 Flex 容器（flex container），简称"容器"。它的所有子元素自动成为容器成员，称为 Flex 项目（flex item），简称"项目"<br>
+
 <img src="img/001.png">
 
 容器默认存在两根轴：**水平的主轴（main axis）**和**垂直的交叉轴（cross axis）**。主轴的开始位置（与边框的交叉点）叫做main start，结束位置叫做main end；交叉轴的开始位置叫做cross start，结束位置叫做cross end。
@@ -39,11 +40,17 @@ Webkit 内核的浏览器，必须加上-webkit前缀。
    + column-reverse：主轴为垂直方向，起点在下沿。
 + **flex-wrap属性**:默认情况下，项目都排在一条线（又称"轴线"）上。flex-wrap属性定义，如果一条轴线排不下，如何换行。有3种情况
    + nowrap（默认）：不换行。
+   
    <img src="img/002.png">
+   
    + wrap：换行，第一行在上方。
+   
    <img src="img/003.jpg">
+   
    + wrap-reverse：换行，第一行在下方
+   
    <img src="img/004.jpg">
+   
 ```css
 .box{
   flex-wrap: nowrap | wrap | wrap-reverse;
@@ -67,7 +74,10 @@ Webkit 内核的浏览器，必须加上-webkit前缀。
   justify-content: flex-start | flex-end | center | space-between | space-around;
 }
 ```
+
 <img src="img/005.png">
+
+
 + **align-items属性**:align-items属性定义项目在交叉轴上如何对齐。
    + flex-start：交叉轴的起点对齐。
    + flex-end：交叉轴的终点对齐。
@@ -79,7 +89,10 @@ Webkit 内核的浏览器，必须加上-webkit前缀。
   align-items: flex-start | flex-end | center | baseline | stretch;
 }
 ```
+<br>
 <img src="img/006.png">
+
+
 + **align-content属性**:align-content属性定义了多根轴线的对齐方式。如果项目只有一根轴线，该属性不起作用。
    + flex-start：与交叉轴的起点对齐。
    + flex-end：与交叉轴的终点对齐。
@@ -92,7 +105,11 @@ Webkit 内核的浏览器，必须加上-webkit前缀。
   align-content: flex-start | flex-end | center | space-between | space-around | stretch;
 }
 ```
+
+
 <img src="img/007.png">
+
+
 ## :sweat_drops:项目属性
 以下6个属性设置在项目上。
 
@@ -110,7 +127,11 @@ order属性定义项目的排列顺序。数值越小，排列越靠前，默认
   order: <integer>;
 }
 ```
+
+
 <img src="img/008.png">
+
+<br>
 #### :zzz:4.2 flex-grow属性
 flex-grow属性定义项目的放大比例，默认为0，即如果存在剩余空间，也不放大。
 ```css
@@ -119,7 +140,11 @@ flex-grow属性定义项目的放大比例，默认为0，即如果存在剩余�
 }
 ```
 如果所有项目的flex-grow属性都为1，则它们将等分剩余空间（如果有的话）。如果一个项目的flex-grow属性为2，其他项目都为1，则前者占据的剩余空间将比其他项多一倍。
+
+
 <img src="img/009.png">
+
+
 #### :zzz:4.3 flex-shrink属性
 flex-shrink属性定义了项目的缩小比例，默认为1，即如果空间不足，该项目将缩小。
 ```css
@@ -127,7 +152,11 @@ flex-shrink属性定义了项目的缩小比例，默认为1，即如果空间�
   flex-shrink: <number>; /* default 1 */
 }
 ```
+
+
 <img src="img/010.jpg">
+
+
 如果所有项目的flex-shrink属性都为1，当空间不足时，都将等比例缩小。如果一个项目的flex-shrink属性为0，其他项目都为1，则空间不足时，前者不缩小。
 
 负值对该属性无效。
@@ -160,5 +189,9 @@ align-self属性允许单个项目有与其他项目不一样的对齐方式，�
   align-self: auto | flex-start | flex-end | center | baseline | stretch;
 }
 ```
+
+
 <img src="img/011.png">
+
+
 该属性可能取6个值，除了auto，其他都与align-items属性完全一致
